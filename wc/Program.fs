@@ -3,7 +3,6 @@
 open Argu
 
 type CmdArgs = 
-    //| File of file: string list
     | [<MainCommand>] Files of file: string list
 with
     interface IArgParserTemplate with
@@ -13,11 +12,10 @@ with
 
 let getCounts path =
     let lines = System.IO.File.ReadAllText path
-    let nlines = lines.Split([|'\n'|]) |> Seq.filter (fun x -> x <> "") |> Seq.length
-    let nwords = lines.Split() |> Seq.filter (fun x -> x <> "") |> Seq.length
+    let nlines = lines.Split([|'\n'|]) |> Array.filter (fun x -> x <> "") |> Array.length
+    let nwords = lines.Split() |> Array.filter (fun x -> x <> "") |> Array.length
     let nchar = String.length lines
-    printfn "%8i%8i%8i %s" nlines nwords nchar path
-    nlines, nwords, nchar
+    nlines, nwords, nchar, path
 
 [<EntryPoint>]
 let main argv =
@@ -32,7 +30,23 @@ let main argv =
         let totals =
             paths
             |> List.map getCounts
+            |> List.map (fun (x: int * int * int * string) ->
+                let nl, nw, nc, p = x
+                printfn "%8i%8i%8i %s" nl nw nc p
+                (nl, nw, nc))
             |> List.fold (fun (x1, x2, x3) (y1, y2, y3) -> (x1+y1, x2+y2, x3+y3)) (0, 0, 0)
         totals |||> printfn "%8i%8i%8i total"
-        else getCounts paths[0] |> ignore
+        else getCounts paths[0] |> (fun x ->
+            let nl, nw, nc, p = x
+            printfn "%8i%8i%8i %s" nl nw nc p)
     0
+
+ (* Parallel version, not faster probably b/c paralell overhead
+    |> List.toArray
+    |> Array.Parallel.map getCounts
+    |> Array.map (fun (x: int * int * int * string) ->
+        let nl, nw, nc, p = x
+        printfn "%8i%8i%8i %s" nl nw nc p
+        (nl, nw, nc))
+    |> Array.fold (fun (x1, x2, x3) (y1, y2, y3) -> (x1+y1, x2+y2, x3+y3)) (0, 0, 0)
+*)
