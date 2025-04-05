@@ -4,8 +4,8 @@ type Arguments =
     | [<AltCommandLine("-n")>] Name of name: string
 
     interface IArgParserTemplate with
-        member s.Usage =
-            match s with
+        member this.Usage =
+            match this with
             | Name _ -> "Name to greet"
 
 [<EntryPoint>]
@@ -16,5 +16,5 @@ let main argv =
     let result = parser.ParseCommandLine argv
     let name = result.GetResult(Name, defaultValue = "world")
 
-    printfn "Hello, %s!" name
+    printfn $"Hello, {name}!"
     0
