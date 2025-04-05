@@ -11,7 +11,7 @@ type Arguments =
 [<EntryPoint>]
 let main argv =
     let errorHandler = ProcessExiter(None)
-    let parser = ArgumentParser.Create<Arguments>(programName = "helloWorld", errorHandler=errorHandler)
+    let parser = ArgumentParser.Create<Arguments>(programName = "ch1", errorHandler=errorHandler)
 
     let result = parser.ParseCommandLine argv
     let name = result.TryGetResult Name |> Option.defaultValue "world"
