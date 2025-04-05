@@ -14,7 +14,6 @@ let main argv =
     let parser = ArgumentParser.Create<Arguments>(programName = "helloWorld", errorHandler=errorHandler)
 
     let result = parser.ParseCommandLine argv
-    let name = result.GetResult(Name, defaultValue = "world")
-
+    let name = result.TryGetResult Name |> Option.defaultValue "world"
     printfn $"Hello, {name}!"
     0
