@@ -2,7 +2,7 @@
 open System
 
 type CliArguments =
-    | [<MainCommand; MandatoryAttribute>] Items of items: string list
+    | [<MainCommand; Mandatory>] Items of items: string list
     | Sorted
 
     interface IArgParserTemplate with
